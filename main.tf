@@ -29,12 +29,12 @@ data "aws_ami" "amazon-linux-2023" {
 }
 
 resource "aws_instance" "tfmyec2" {
-  ami = data.aws_ami.amazon-linux-2023.id
-  instance_type = var.instance_type
-  count = var.num_of_instance
-  key_name = var.key_name
+  ami                    = data.aws_ami.amazon-linux-2023.id
+  instance_type          = var.instance_type
+  count                  = var.num_of_instance
+  key_name               = var.key_name
   vpc_security_group_ids = [aws_security_group.tf-sec-gr.id]
-  user_data = templatefile("${abspath(path.module)}/userdata.sh", {myserver = var.server-name})
+  user_data              = templatefile("${abspath(path.module)}/userdata.sh", { myserver = var.server_name })
   tags = {
     Name = var.tag
   }
@@ -47,20 +47,20 @@ resource "aws_security_group" "tf-sec-gr" {
   }
 
   dynamic "ingress" {
-    for_each = var.docker-instance-ports
+    for_each = var.docker_instance_ports
     iterator = port
     content {
-      from_port = port.value
-      to_port = port.value
-      protocol = "tcp"
+      from_port   = port.value
+      to_port     = port.value
+      protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
     }
   }
 
   egress {
-    from_port =0
-    protocol = "-1"
-    to_port =0
+    from_port   = 0
+    protocol    = "-1"
+    to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
